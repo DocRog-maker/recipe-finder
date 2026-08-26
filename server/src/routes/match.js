@@ -1,38 +1,27 @@
 const express = require('express');
-const { pool } = require('../db/pool');
+const store = require('../db/store');
 const { normalizeIngredientName } = require('../ingestion/normalize');
 
 const router = express.Router();
 
 // POST /api/match  { ingredients: ["chicken thighs", "garlic", "lemon", "rice"] }
-router.post('/', async (req, res) => {
+router.post('/', (req, res) => {
   const haveRaw = Array.isArray(req.body.ingredients) ? req.body.ingredients : [];
-  console.log(`searching for ${haveRaw}`)
   const have = new Set(haveRaw.map(normalizeIngredientName).filter(Boolean));
 
-  const { rows: recipes } = await pool.query(
-    `SELECT id, title, source_pdf_url, thumbnail_url FROM recipes WHERE status = 'ready'`
-  );
-   console.log(`recipe number ${recipes}`)
-  const { rows: ingredientRows } = await pool.query(
-    `SELECT ri.recipe_id, i.canonical_name
-     FROM recipe_ingredients ri JOIN ingredients i ON i.id = ri.ingredient_id`
-  );
-
-  const byRecipe = new Map();
-  for (const row of ingredientRows) {
-    if (!byRecipe.has(row.recipe_id)) byRecipe.set(row.recipe_id, []);
-    byRecipe.get(row.recipe_id).push(row.canonical_name);
-  }
-
-  const results = recipes
+  const results = store
+    .listRecipes()
+    .filter((recipe) => recipe.status === 'ready')
     .map((recipe) => {
-      const required = byRecipe.get(recipe.id) || [];
+      const required = (recipe.ingredients || []).map((i) => i.name);
       if (required.length === 0) return null;
       const matched = required.filter((name) => have.has(name));
       const missing = required.filter((name) => !have.has(name));
       return {
-        ...recipe,
+        id: recipe.id,
+        title: recipe.title,
+        source_pdf_url: recipe.source_pdf_url,
+        thumbnail_url: recipe.thumbnail_url,
         matchCount: matched.length,
         totalCount: required.length,
         matchPercent: Math.round((matched.length / required.length) * 100),

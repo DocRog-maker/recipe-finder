@@ -1,6 +1,6 @@
 const path = require('path');
 const { PDFNet } = require('@pdftron/pdfnet-node');
-const { pool } = require('../db/pool');
+const store = require('../db/store');
 const { parseIngredients } = require('./parseIngredients');
 const { normalizeIngredientName } = require('./normalize');
 
@@ -48,61 +48,31 @@ async function renderThumbnail(doc, outPath) {
   await draw.export(page, outPath, 'PNG');
 }
 
-/** Upsert an ingredient by canonical name, returning its id. */
-async function upsertIngredient(client, canonicalName) {
-  const { rows } = await client.query(
-    `INSERT INTO ingredients (canonical_name)
-     VALUES ($1)
-     ON CONFLICT (canonical_name) DO UPDATE SET canonical_name = EXCLUDED.canonical_name
-     RETURNING id`,
-    [canonicalName]
-  );
-  return rows[0].id;
-}
-
 /**
  * Renders the thumbnail, records the page count, and replaces the recipe's
- * ingredient rows with whatever `parseIngredients(rawText)` yields. Shared by
- * both the auto (full-PDF) and manual (selected-text) ingestion paths.
+ * ingredients with whatever `parseIngredients(rawText)` yields. Shared by both
+ * the auto (full-PDF) and manual (selected-text) ingestion paths.
  */
 async function persistRecipe(recipeId, doc, thumbnailPath, rawText) {
   const pageCount = await doc.getPageCount();
   await renderThumbnail(doc, thumbnailPath);
 
-  const parsed = parseIngredients(rawText);
+  const ingredients = parseIngredients(rawText)
+    .map((item) => ({
+      name: normalizeIngredientName(item.name),
+      rawText: item.rawText,
+      quantity: item.quantity,
+      unit: item.unit,
+    }))
+    .filter((item) => item.name);
 
-  const client = await pool.connect();
-  try {
-    await client.query('BEGIN');
-    await client.query('DELETE FROM recipe_ingredients WHERE recipe_id = $1', [recipeId]);
-
-    for (const item of parsed) {
-      const canonicalName = normalizeIngredientName(item.name);
-      if (!canonicalName) continue;
-      const ingredientId = await upsertIngredient(client, canonicalName);
-      await client.query(
-        `INSERT INTO recipe_ingredients (recipe_id, ingredient_id, raw_text, quantity, unit)
-         VALUES ($1, $2, $3, $4, $5)`,
-        [recipeId, ingredientId, item.rawText, item.quantity, item.unit]
-      );
-    }
-
-    const status = parsed.length > 0 ? 'ready' : 'failed';
-    const error = parsed.length > 0 ? null : 'No ingredients could be extracted.';
-    await client.query(
-      `UPDATE recipes
-       SET status = $1, error = $2, page_count = $3, thumbnail_url = $4
-       WHERE id = $5`,
-      [status, error, pageCount, `/uploads/${path.basename(thumbnailPath)}`, recipeId]
-    );
-
-    await client.query('COMMIT');
-  } catch (err) {
-    await client.query('ROLLBACK');
-    throw err;
-  } finally {
-    client.release();
-  }
+  await store.setRecipeIngredients(recipeId, ingredients);
+  await store.updateRecipe(recipeId, {
+    status: ingredients.length > 0 ? 'ready' : 'failed',
+    error: ingredients.length > 0 ? null : 'No ingredients could be extracted.',
+    page_count: pageCount,
+    thumbnail_url: `/uploads/${path.basename(thumbnailPath)}`,
+  });
 }
 
 /**
@@ -123,10 +93,7 @@ async function ingestRecipe(recipeId, pdfPath, thumbnailPath) {
     }, process.env.APRYSE_LICENSE_KEY);
   } catch (err) {
     console.error(`Ingestion failed for recipe ${recipeId}:`, err);
-    await pool.query(`UPDATE recipes SET status = 'failed', error = $1 WHERE id = $2`, [
-      String(err.message || err),
-      recipeId,
-    ]);
+    await store.updateRecipe(recipeId, { status: 'failed', error: String(err.message || err) });
   }
 }
 
@@ -134,7 +101,7 @@ async function ingestRecipe(recipeId, pdfPath, thumbnailPath) {
  * Manual ingestion: parse ingredients from caller-supplied text (the region a
  * user selected in the viewer) instead of the whole PDF. Still opens the PDF to
  * render the thumbnail and record the page count. Throws on a genuine failure
- * (bad PDF, DB error) so the caller can report it distinctly from the benign
+ * (bad PDF, write error) so the caller can report it distinctly from the benign
  * "text contained no recognisable ingredients" case, which persistRecipe
  * records as status='failed' with an explanatory message.
  *

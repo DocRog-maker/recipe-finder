@@ -1,0 +1,129 @@
+{
+  "nextRecipeId": 3,
+  "recipes": [
+    {
+      "id": 1,
+      "title": "falafel",
+      "source_pdf_url": "/uploads/1787782967639-748775266.pdf",
+      "thumbnail_url": "/uploads/1787782967639-748775266.png",
+      "page_count": 1,
+      "uploaded_by": "dave@test",
+      "status": "ready",
+      "error": null,
+      "created_at": "2026-08-26T22:22:47.646Z",
+      "ingredients": [
+        {
+          "name": "bean",
+          "rawText": "Beans",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "garlic powder",
+          "rawText": "Garlic powder",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "salt",
+          "rawText": "Salt",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "cooking oil",
+          "rawText": "Cooking oil",
+          "quantity": null,
+          "unit": null
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Blueberry_Pancakes",
+      "source_pdf_url": "/uploads/1787783180086-172069379.pdf",
+      "thumbnail_url": "/uploads/1787783180086-172069379.png",
+      "page_count": 2,
+      "uploaded_by": "dave@test",
+      "status": "ready",
+      "error": null,
+      "created_at": "2026-08-26T22:26:20.093Z",
+      "ingredients": [
+        {
+          "name": "plain flour",
+          "rawText": "260 g plain flour (approx. 2 cups)",
+          "quantity": 260,
+          "unit": "g"
+        },
+        {
+          "name": "caster sugar",
+          "rawText": "2 Tbsp caster sugar",
+          "quantity": 2,
+          "unit": "tbsp"
+        },
+        {
+          "name": "tsp baking powder",
+          "rawText": "1 ½ tsp baking powder",
+          "quantity": 1,
+          "unit": null
+        },
+        {
+          "name": "tsp baking soda",
+          "rawText": "¾ tsp baking soda",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "tsp salt",
+          "rawText": "½ tsp salt",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "egg",
+          "rawText": "2 large eggs",
+          "quantity": 2,
+          "unit": null
+        },
+        {
+          "name": "buttermilk",
+          "rawText": "400 ml buttermilk",
+          "quantity": 400,
+          "unit": "ml"
+        },
+        {
+          "name": "vanilla extract",
+          "rawText": "1 tsp vanilla extract",
+          "quantity": 1,
+          "unit": "tsp"
+        },
+        {
+          "name": "unsalted butter and",
+          "rawText": "60 g unsalted butter, melted and cooled",
+          "quantity": 60,
+          "unit": "g"
+        },
+        {
+          "name": "seriously organic blueberrie",
+          "rawText": "150 g Seriously Organic frozen blueberries",
+          "quantity": 150,
+          "unit": "g"
+        },
+        {
+          "name": "butter or oil for cooking",
+          "rawText": "Butter or oil, for cooking",
+          "quantity": null,
+          "unit": null
+        }
+      ]
+    }
+  ],
+  "annotations": {
+    "1:dave@test": {
+      "recipe_id": 1,
+      "user_id": "dave@test",
+      "xfdf": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><xfdf xmlns=\"http://ns.adobe.com/xfdf/\" xml:space=\"preserve\"><pdf-info xmlns=\"http://www.pdftron.com/pdfinfo\" version=\"2\" import-version=\"4\" /><fields /><annots><highlight page=\"0\" rect=\"453.52,454.887,527.99,469.187\" color=\"#FFCD45\" flags=\"print\" name=\"d6d84d27-3b41-1e6c-5094-4383865c9d55\" title=\"Guest\" subject=\"Highlight\" date=\"D:20260827102438+12'00'\" creationdate=\"D:20260827102437+12'00'\" coords=\"453.51969999999994,469.18609999999995,527.9897,469.18609999999995,453.51969999999994,454.88609999999994,527.9897,454.88609999999994\"><trn-custom-data bytes=\"{&quot;trn-annot-preview&quot;:&quot;s so it can be soft&quot;}\"/></highlight></annots><pages><defmtx matrix=\"1,0,0,-1,0,841.89\" /></pages></xfdf>",
+      "updated_at": "2026-08-26T22:24:39.911Z"
+    }
+  }
+}

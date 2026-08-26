@@ -76,9 +76,14 @@ export default function IngredientExtractor({ userId }) {
     if (isInstantiated.current) return;
     isInstantiated.current = true;
 
+    const s = import.meta.env.VITE_WEBVIEWER_LICENSE_KEY1;
+    console.log(`S: ${s}`)
     async function init() {
       const instance = await WebViewer(
-        { path: '/webviewer', licenseKey: import.meta.env.VITE_WEBVIEWER_LICENSE_KEY },
+        { path: '/webviewer', 
+         licenseKey: import.meta.env.VITE_WEBVIEWER_LICENSE_KEY1,
+          enableFilePicker:true
+         },
         viewerDiv.current
       );
       instanceRef.current = instance;
