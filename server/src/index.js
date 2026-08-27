@@ -7,6 +7,7 @@ const recipesRouter = require('./routes/recipes');
 const matchRouter = require('./routes/match');
 const annotationsRouter = require('./routes/annotations');
 const ocrRouter = require('./routes/ocr');
+const icrRouter = require('./routes/icr');
 
 const app = express();
 const uploadDir = path.resolve(process.env.UPLOAD_DIR || './uploads');
@@ -21,6 +22,7 @@ app.use('/api/recipes', recipesRouter);
 app.use('/api/recipes', annotationsRouter); // adds GET/PUT /api/recipes/:id/annotations
 app.use('/api/match', matchRouter);
 app.use('/api/ocr', ocrRouter);
+app.use('/api/icr', icrRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

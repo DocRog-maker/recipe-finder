@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { uploadRecipe, ocrPdf } from '../api.js';
+import { uploadRecipe, ocrPdf, icrPdf } from '../api.js';
 
 // Quick, un-structured selected text — good enough to know whether *something*
 // is selected (for the preview and to enable the button). getSelectedText can
@@ -70,6 +70,7 @@ export default function IngredientExtractor({ userId }) {
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
   const [ocrBusy, setOcrBusy] = useState(false);
+  const [icrBusy, setIcrBusy] = useState(false);
 
   // Create WebViewer once (kept alive across StrictMode's mount/unmount/mount).
   useEffect(() => {
@@ -162,14 +163,12 @@ export default function IngredientExtractor({ userId }) {
     }
   }
 
-  // OCR on the server and append the recognised text to the ingredients box.
-  // The OCR area is chosen, in order of preference:
+  // Choose the area to recognise, in order of preference:
   //   1. a rectangle annotation the user drew (selected one, else the latest),
   //   2. a text selection's bounding box,
-  //   3. the whole current page.
-  // Useful for scanned/handwritten recipes with no selectable text.
-  async function runOcr() {
-    if (!file) return;
+  //   3. the whole current page (rect = null).
+  // Returns { page, rect, source }. Shared by OCR and ICR.
+  function pickArea() {
     const { documentViewer, annotationManager, Annotations } = instanceRef.current.Core;
     let page = documentViewer.getCurrentPage();
     let rect = null;
@@ -209,6 +208,16 @@ export default function IngredientExtractor({ userId }) {
       }
     }
 
+    return { page, rect, source };
+  }
+
+  // OCR on the server and append the recognised text to the ingredients box.
+  // Useful for scanned recipes with no selectable text.
+  async function runOcr() {
+    if (!file) return;
+    const { page, rect, source } = pickArea();
+
+    setSelectionText('');
     setOcrBusy(true);
     setStatus(
       rect
@@ -219,9 +228,9 @@ export default function IngredientExtractor({ userId }) {
       const { text } = await ocrPdf(file, { page, rect });
       const clean = (text || '').trim();
       if (clean) {
-        setSelectionText((prev) => (prev ? `${prev}\n${clean}` : clean));
+        setSelectionText(clean);
         const lines = clean.split(/\r?\n/).filter(Boolean).length;
-        setStatus(`OCR added ${lines} line${lines === 1 ? '' : 's'} to the ingredients.`);
+        setStatus(`OCR set ${lines} line${lines === 1 ? '' : 's'} of ingredients.`);
       } else {
         setStatus('OCR returned no text for that area.');
       }
@@ -229,6 +238,37 @@ export default function IngredientExtractor({ userId }) {
       setStatus(`OCR failed: ${err.message}`);
     } finally {
       setOcrBusy(false);
+    }
+  }
+
+  // Handwriting recognition (ICR) on the server, appending the recognised text
+  // to the ingredients box. Same area-picking as OCR — draw a rectangle over the
+  // handwritten list for best results. Useful for handwritten recipes.
+  async function runIcr() {
+    if (!file) return;
+    const { page, rect, source } = pickArea();
+
+    setSelectionText('');
+    setIcrBusy(true);
+    setStatus(
+      rect
+        ? `Reading handwriting in the ${source === 'rectangle' ? 'rectangle' : 'selected area'} on page ${page}…`
+        : `Reading handwriting on page ${page}…`
+    );
+    try {
+      const { text } = await icrPdf(file, { page, rect });
+      const clean = (text || '').trim();
+      if (clean) {
+        setSelectionText(clean);
+        const lines = clean.split(/\r?\n/).filter(Boolean).length;
+        setStatus(`ICR set ${lines} line${lines === 1 ? '' : 's'} of ingredients.`);
+      } else {
+        setStatus('ICR returned no handwriting text for that area.');
+      }
+    } catch (err) {
+      setStatus(`ICR failed: ${err.message}`);
+    } finally {
+      setIcrBusy(false);
     }
   }
 
@@ -270,22 +310,29 @@ export default function IngredientExtractor({ userId }) {
           />
 
           <p className="hint">
-            No selectable text (a scanned or handwritten recipe)? Draw a rectangle
-            on the PDF to OCR just that area — otherwise OCR reads the whole current
-            page.
+            No selectable text? Draw a rectangle on the PDF to recognise just that
+            area — otherwise the whole current page is read. Use <strong>OCR</strong>{' '}
+            for printed/scanned text and <strong>ICR</strong> for handwriting.
           </p>
           <div className="button-row">
             <button
               className="secondary-button"
               onClick={runOcr}
-              disabled={!file || ocrBusy || busy}
+              disabled={!file || ocrBusy || icrBusy || busy}
             >
               {ocrBusy ? 'Running OCR…' : 'OCR page'}
             </button>
             <button
+              className="secondary-button"
+              onClick={runIcr}
+              disabled={!file || ocrBusy || icrBusy || busy}
+            >
+              {icrBusy ? 'Reading handwriting…' : 'ICR handwriting'}
+            </button>
+            <button
               className="primary-button"
               onClick={save}
-              disabled={!file || !selectionText.trim() || busy || ocrBusy}
+              disabled={!file || !selectionText.trim() || busy || ocrBusy || icrBusy}
             >
               {busy ? 'Saving…' : 'Save recipe'}
             </button>

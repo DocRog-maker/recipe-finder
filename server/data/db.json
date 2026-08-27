@@ -1,5 +1,5 @@
 {
-  "nextRecipeId": 6,
+  "nextRecipeId": 7,
   "recipes": [
     {
       "id": 1,
@@ -224,6 +224,73 @@
           "rawText": "2/3 cup (80g) grated pizza cheese",
           "quantity": 0.6666666666666666,
           "unit": "cup"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Aunty Flo's via OCR",
+      "source_pdf_url": "/uploads/1787799910747-119395475.pdf",
+      "thumbnail_url": "/uploads/1787799910747-119395475.png",
+      "page_count": 1,
+      "uploaded_by": "dave@test",
+      "status": "ready",
+      "error": null,
+      "created_at": "2026-08-27T03:05:10.749Z",
+      "ingredients": [
+        {
+          "name": "margarine",
+          "rawText": "Margarine",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "sugar",
+          "rawText": "Sugar",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "sr flour",
+          "rawText": "SR Flour",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "egg",
+          "rawText": "eggs",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "drinking chocolate",
+          "rawText": "Drinking Chocolate",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "baking powder",
+          "rawText": "Baking powder",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "icing sugar",
+          "rawText": "icing sugar",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "butter",
+          "rawText": "butter",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "water",
+          "rawText": "water",
+          "quantity": null,
+          "unit": null
         }
       ]
     }
