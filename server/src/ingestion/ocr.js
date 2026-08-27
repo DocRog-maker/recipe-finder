@@ -5,10 +5,10 @@ const { registerModules } = require('../apryse');
  * OCRs a PDF and returns the recognised text. Requires the Apryse OCR/ICR module
  * to be installed (see server/vendor/apryse/README.md).
  *
- * If `page` is given, only that page's text is returned; otherwise every page.
  * If `rect` is given (a WebViewer-space rectangle, top-left origin, on `page`),
- * only text inside that rectangle is returned — used to OCR just the area a user
- * marked over the ingredients.
+ * OCR is restricted to that rectangle via an include ("text") zone and all of
+ * its recognised text is returned. Otherwise, if `page` is given only that page
+ * is OCR'd; failing that, the whole document is.
  *
  * @param {string} pdfPath - path to the PDF on disk
  * @param {number|null} page - 1-based page number, or null for all pages
@@ -17,46 +17,52 @@ const { registerModules } = require('../apryse');
  */
 async function ocrRegion(pdfPath, page, rect) {
   let out = '';
-
+  console.log(rect)
   await PDFNet.runWithCleanup(async () => {
     await registerModules();
 
     const doc = await PDFNet.PDFDoc.createFromFilePath(pdfPath);
     doc.initSecurityHandler();
 
-    // Add a searchable text layer via OCR (needs the OCR/ICR module).
-    const ocrOptions = new PDFNet.OCRModule.OCROptions();
-    await PDFNet.OCRModule.processPDF(doc, ocrOptions);
-
     const pageCount = await doc.getPageCount();
     const targetPage = page && page >= 1 && page <= pageCount ? page : null;
 
-    // Read the OCR'd text back out of a page, optionally clipped to `rect`.
-    const readPage = async (pageNum) => {
+    const ocrOptions = new PDFNet.OCRModule.OCROptions();
+
+    // When a rectangle is given, tell OCR to only look inside it (an include /
+    // "text" zone) rather than OCRing the whole page and clipping afterwards.
+    let clip = null;
+    if (rect && targetPage) {
+      // Zones are given in PDF page coordinates (bottom-left origin), so flip the
+      // top-left-origin WebViewer rectangle using the page height.
+      const p = await doc.getPage(targetPage);
+      const height = await p.getPageHeight();
+      const zone = { x1: rect.x1, y1: height - rect.y2, x2: rect.x2, y2: height - rect.y1 };
+
+      ocrOptions.setUsePDFPageCoords(true);
+      ocrOptions.addTextZonesForPage([zone], targetPage);
+
+      // Read back the OCR'd text clipped to the same region.
+      clip = await PDFNet.Rect.init(zone.x1, zone.y1, zone.x2, zone.y2);
+    }
+
+    await PDFNet.OCRModule.processPDF(doc, ocrOptions);
+
+    const readPage = async (pageNum, clipRect) => {
       const p = await doc.getPage(pageNum);
-
-      let clip;
-      if (pageNum === targetPage && rect) {
-        // WebViewer rectangles are top-left origin; PDFNet is bottom-left, so
-        // flip the y coordinates using the page height.
-        const height = await p.getPageHeight();
-        clip = await PDFNet.Rect.init(rect.x1, height - rect.y2, rect.x2, height - rect.y1);
-      } else {
-        clip = await p.getCropBox();
-      }
-
       const extractor = await PDFNet.TextExtractor.create();
-      extractor.begin(p, clip);
+      extractor.begin(p, clipRect || (await p.getCropBox()));
       return extractor.getAsText();
     };
 
     if (targetPage) {
-      out = await readPage(targetPage);
+      out = await readPage(targetPage)//, clip);
     } else {
       for (let i = 1; i <= pageCount; i++) {
         out += (await readPage(i)) + '\n';
       }
     }
+
   }, process.env.APRYSE_LICENSE_KEY);
 
   return out.trim();
