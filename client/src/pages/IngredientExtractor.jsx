@@ -66,7 +66,6 @@ export default function IngredientExtractor({ userId }) {
   const [file, setFile] = useState(null);
   const [title, setTitle] = useState('');
   const [selectionText, setSelectionText] = useState('');
-  const [sentText, setSentText] = useState('');
   const [result, setResult] = useState(null);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
@@ -76,8 +75,6 @@ export default function IngredientExtractor({ userId }) {
     if (isInstantiated.current) return;
     isInstantiated.current = true;
 
-    const s = import.meta.env.VITE_WEBVIEWER_LICENSE_KEY1;
-    console.log(`S: ${s}`)
     async function init() {
       const instance = await WebViewer(
         { path: '/webviewer', 
@@ -90,10 +87,14 @@ export default function IngredientExtractor({ userId }) {
 
       const { documentViewer, Tools } = instance.Core;
 
-      // Track the current text selection so the save button knows what to send.
-      // Read it back from the viewer (not the event arg) to get the full text.
-      documentViewer.addEventListener('textSelected', () => {
-        readSelectedText(documentViewer).then(setSelectionText);
+      // When the user selects text in the PDF, drop it into the (editable)
+      // ingredients box — line-preserving region text, falling back to the flat
+      // selection. Only a non-empty selection replaces the box, so a stray click
+      // won't wipe out anything the user typed manually.
+      documentViewer.addEventListener('textSelected', async () => {
+        let text = await readSelectedRegionText(instance);
+        if (!text) text = await readSelectedText(documentViewer);
+        if (text) setSelectionText(text);
       });
 
       // Start in the text-selection tool so dragging selects the ingredients text.
@@ -106,12 +107,13 @@ export default function IngredientExtractor({ userId }) {
   }, []);
 
   // Display the chosen local PDF (no upload yet — that happens on save).
-  useEffect(() => {
+  useEffect( () => {
     if (!ready || !file) return;
     setSelectionText('');
     setResult(null);
     setStatus('');
-    instanceRef.current.UI.loadDocument(file, { filename: file.name });
+  instanceRef.current.UI.loadDocument(file, { filename: file.name });
+
   }, [ready, file]);
 
   function chooseFile(e) {
@@ -123,15 +125,12 @@ export default function IngredientExtractor({ userId }) {
   }
 
   async function save() {
-    // Re-read the selection at save time, preferring the line-preserving region
-    // text and falling back to the flat selection if that comes back empty.
-    let text = await readSelectedRegionText(instanceRef.current);
-    if (!text) text = await readSelectedText(instanceRef.current.Core.documentViewer);
-    if (!text) text = selectionText;
+    // The ingredients box is the source of truth — it holds whatever was typed
+    // manually and/or filled in from a PDF selection.
+    const text = selectionText.trim();
     if (!file || !text) return;
 
     setBusy(true);
-    setSentText(text);
     console.log('Raw text being parsed:\n' + text);
     setStatus('Saving recipe and parsing the selected ingredients…');
     try {
@@ -186,20 +185,23 @@ export default function IngredientExtractor({ userId }) {
             </label>
           )}
 
-          <h2 className="section-title">2. Select the ingredients text</h2>
+          <h2 className="section-title">2. Ingredients</h2>
           <p className="hint">
-            Drag across the ingredient list in the PDF on the right, then save.
+            Type the ingredients here (one per line), or drag across the ingredient
+            list in the PDF on the right to fill this in — then save.
           </p>
-          {selectionText ? (
-            <pre className="selection-preview">{selectionText}</pre>
-          ) : (
-            <p className="hint">Nothing selected yet.</p>
-          )}
+          <textarea
+            className="ingredients-input"
+            value={selectionText}
+            onChange={(e) => setSelectionText(e.target.value)}
+            placeholder={'2 large eggplant\n1/3 cup tomato paste\n200g grated cheese'}
+            rows={8}
+          />
 
           <button
             className="primary-button"
             onClick={save}
-            disabled={!file || !selectionText || busy}
+            disabled={!file || !selectionText.trim() || busy}
           >
             {busy ? 'Saving…' : 'Save recipe'}
           </button>
@@ -208,9 +210,6 @@ export default function IngredientExtractor({ userId }) {
 
           {result && (
             <>
-              <h2 className="section-title">Raw text parsed</h2>
-              <pre className="selection-preview">{sentText}</pre>
-
               <h2 className="section-title">Parsed ingredients</h2>
               {result.length > 0 ? (
                 <ul className="ingredient-result">
@@ -227,8 +226,8 @@ export default function IngredientExtractor({ userId }) {
                 </ul>
               ) : (
                 <p className="hint">
-                  Nothing was recognised in the text above. Try selecting just the
-                  ingredient lines (one per line).
+                  Nothing was recognised. Try entering just the ingredient lines
+                  (one per line).
                 </p>
               )}
             </>

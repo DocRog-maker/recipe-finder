@@ -1,5 +1,5 @@
 {
-  "nextRecipeId": 3,
+  "nextRecipeId": 5,
   "recipes": [
     {
       "id": 1,
@@ -112,6 +112,140 @@
         {
           "name": "butter or oil for cooking",
           "rawText": "Butter or oil, for cooking",
+          "quantity": null,
+          "unit": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "BRWA83B76F1CC6F_000380-rot",
+      "source_pdf_url": "/uploads/1787789379919-338461491.pdf",
+      "thumbnail_url": "/uploads/1787789379919-338461491.png",
+      "page_count": 1,
+      "uploaded_by": "dave@test",
+      "status": "ready",
+      "error": null,
+      "created_at": "2026-08-27T00:09:39.930Z",
+      "ingredients": [
+        {
+          "name": "margarine",
+          "rawText": "4 oz Margarine",
+          "quantity": 4,
+          "unit": "oz"
+        },
+        {
+          "name": "sugar",
+          "rawText": "4 oz Sugar",
+          "quantity": 4,
+          "unit": "oz"
+        },
+        {
+          "name": "self-raising flour",
+          "rawText": "2 1/2 oz Self-raising flour",
+          "quantity": 2.5,
+          "unit": "oz"
+        },
+        {
+          "name": "egg",
+          "rawText": "3 eggs",
+          "quantity": 3,
+          "unit": null
+        },
+        {
+          "name": "baking powder",
+          "rawText": "1/2 tsp baking powder",
+          "quantity": 0.5,
+          "unit": "tsp"
+        },
+        {
+          "name": "icing sugar",
+          "rawText": "4 oz icing sugar",
+          "quantity": 4,
+          "unit": "oz"
+        },
+        {
+          "name": "butter",
+          "rawText": "1/2 oz butter",
+          "quantity": 0.5,
+          "unit": "oz"
+        },
+        {
+          "name": "desert spoon drinking chocolate",
+          "rawText": "1 desert spoon Drinking Chocolate",
+          "quantity": 1,
+          "unit": null
+        },
+        {
+          "name": "water",
+          "rawText": "water",
+          "quantity": null,
+          "unit": null
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Aunty Flo's chocolate cake",
+      "source_pdf_url": "/uploads/1787789479671-767851084.pdf",
+      "thumbnail_url": "/uploads/1787789479671-767851084.png",
+      "page_count": 1,
+      "uploaded_by": "dave@test",
+      "status": "ready",
+      "error": null,
+      "created_at": "2026-08-27T00:11:19.678Z",
+      "ingredients": [
+        {
+          "name": "margarine",
+          "rawText": "4 oz Margarine",
+          "quantity": 4,
+          "unit": "oz"
+        },
+        {
+          "name": "sugar",
+          "rawText": "4 oz Sugar",
+          "quantity": 4,
+          "unit": "oz"
+        },
+        {
+          "name": "self-raising flour",
+          "rawText": "2 1/2 oz Self-raising flour",
+          "quantity": 2.5,
+          "unit": "oz"
+        },
+        {
+          "name": "egg",
+          "rawText": "3 eggs",
+          "quantity": 3,
+          "unit": null
+        },
+        {
+          "name": "baking powder",
+          "rawText": "1/2 tsp baking powder",
+          "quantity": 0.5,
+          "unit": "tsp"
+        },
+        {
+          "name": "icing sugar",
+          "rawText": "4 oz icing sugar",
+          "quantity": 4,
+          "unit": "oz"
+        },
+        {
+          "name": "butter",
+          "rawText": "1/2 oz butter",
+          "quantity": 0.5,
+          "unit": "oz"
+        },
+        {
+          "name": "dsp drinking chocolate",
+          "rawText": "1 dsp Drinking Chocolate",
+          "quantity": 1,
+          "unit": null
+        },
+        {
+          "name": "water",
+          "rawText": "water",
           "quantity": null,
           "unit": null
         }
