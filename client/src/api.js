@@ -26,6 +26,14 @@ export function uploadRecipe(file, { title, userId, ingredientsText } = {}) {
   return fetch(`${BASE}/recipes`, { method: 'POST', body: form }).then(handle);
 }
 
+export function ocrPdf(file, { page, rect } = {}) {
+  const form = new FormData();
+  form.append('file', file);
+  if (page) form.append('page', String(page));
+  if (rect) form.append('rect', JSON.stringify(rect));
+  return fetch(`${BASE}/ocr`, { method: 'POST', body: form }).then(handle);
+}
+
 export function matchRecipes(ingredients) {
   return fetch(`${BASE}/match`, {
     method: 'POST',

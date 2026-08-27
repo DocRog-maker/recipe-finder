@@ -6,6 +6,7 @@ const cors = require('cors');
 const recipesRouter = require('./routes/recipes');
 const matchRouter = require('./routes/match');
 const annotationsRouter = require('./routes/annotations');
+const ocrRouter = require('./routes/ocr');
 
 const app = express();
 const uploadDir = path.resolve(process.env.UPLOAD_DIR || './uploads');
@@ -19,6 +20,7 @@ app.get('/api/health', (_req, res) => res.json({ ok: true }));
 app.use('/api/recipes', recipesRouter);
 app.use('/api/recipes', annotationsRouter); // adds GET/PUT /api/recipes/:id/annotations
 app.use('/api/match', matchRouter);
+app.use('/api/ocr', ocrRouter);
 
 app.use((err, _req, res, _next) => {
   console.error(err);

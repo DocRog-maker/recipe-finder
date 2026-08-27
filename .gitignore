@@ -3,5 +3,8 @@ node_modules/
 server/uploads/*
 !server/uploads/.gitkeep
 
+server/vendor/apryse/*
+!server/vendor/apryse/README.md
+
 client/public/webviewer/
 dist/

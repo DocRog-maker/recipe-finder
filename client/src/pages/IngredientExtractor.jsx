@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import WebViewer from '@pdftron/webviewer';
-import { uploadRecipe } from '../api.js';
+import { uploadRecipe, ocrPdf } from '../api.js';
 
 // Quick, un-structured selected text — good enough to know whether *something*
 // is selected (for the preview and to enable the button). getSelectedText can
@@ -69,6 +69,7 @@ export default function IngredientExtractor({ userId }) {
   const [result, setResult] = useState(null);
   const [status, setStatus] = useState('');
   const [busy, setBusy] = useState(false);
+  const [ocrBusy, setOcrBusy] = useState(false);
 
   // Create WebViewer once (kept alive across StrictMode's mount/unmount/mount).
   useEffect(() => {
@@ -161,6 +162,76 @@ export default function IngredientExtractor({ userId }) {
     }
   }
 
+  // OCR on the server and append the recognised text to the ingredients box.
+  // The OCR area is chosen, in order of preference:
+  //   1. a rectangle annotation the user drew (selected one, else the latest),
+  //   2. a text selection's bounding box,
+  //   3. the whole current page.
+  // Useful for scanned/handwritten recipes with no selectable text.
+  async function runOcr() {
+    if (!file) return;
+    const { documentViewer, annotationManager, Annotations } = instanceRef.current.Core;
+    let page = documentViewer.getCurrentPage();
+    let rect = null;
+    let source = 'page';
+
+    // 1) A rectangle annotation defines the area, if the user drew one.
+    const isRect = (a) => a instanceof Annotations.RectangleAnnotation;
+    let annot = annotationManager.getSelectedAnnotations().find(isRect);
+    if (!annot) {
+      const rects = annotationManager.getAnnotationsList().filter(isRect);
+      annot = rects[rects.length - 1];
+    }
+
+    if (annot) {
+      page = annot.PageNumber;
+      const r = annot.getRect();
+      rect = { x1: r.x1, y1: r.y1, x2: r.x2, y2: r.y2 };
+      source = 'rectangle';
+    } else {
+      // 2) Otherwise fall back to a text selection's bounding box, if any.
+      const quads = (documentViewer.getSelectedTextQuads() || {})[page];
+      if (quads && quads.length) {
+        let minX = Infinity;
+        let minY = Infinity;
+        let maxX = -Infinity;
+        let maxY = -Infinity;
+        for (const q of quads) {
+          for (const [x, y] of [[q.x1, q.y1], [q.x2, q.y2], [q.x3, q.y3], [q.x4, q.y4]]) {
+            if (x < minX) minX = x;
+            if (x > maxX) maxX = x;
+            if (y < minY) minY = y;
+            if (y > maxY) maxY = y;
+          }
+        }
+        rect = { x1: minX, y1: minY, x2: maxX, y2: maxY };
+        source = 'selection';
+      }
+    }
+
+    setOcrBusy(true);
+    setStatus(
+      rect
+        ? `Running OCR on the ${source === 'rectangle' ? 'rectangle' : 'selected area'} on page ${page}…`
+        : `Running OCR on page ${page}…`
+    );
+    try {
+      const { text } = await ocrPdf(file, { page, rect });
+      const clean = (text || '').trim();
+      if (clean) {
+        setSelectionText((prev) => (prev ? `${prev}\n${clean}` : clean));
+        const lines = clean.split(/\r?\n/).filter(Boolean).length;
+        setStatus(`OCR added ${lines} line${lines === 1 ? '' : 's'} to the ingredients.`);
+      } else {
+        setStatus('OCR returned no text for that area.');
+      }
+    } catch (err) {
+      setStatus(`OCR failed: ${err.message}`);
+    } finally {
+      setOcrBusy(false);
+    }
+  }
+
   return (
     <div className="workspace">
       <aside className="workspace-left">
@@ -198,13 +269,27 @@ export default function IngredientExtractor({ userId }) {
             rows={8}
           />
 
-          <button
-            className="primary-button"
-            onClick={save}
-            disabled={!file || !selectionText.trim() || busy}
-          >
-            {busy ? 'Saving…' : 'Save recipe'}
-          </button>
+          <p className="hint">
+            No selectable text (a scanned or handwritten recipe)? Draw a rectangle
+            on the PDF to OCR just that area — otherwise OCR reads the whole current
+            page.
+          </p>
+          <div className="button-row">
+            <button
+              className="secondary-button"
+              onClick={runOcr}
+              disabled={!file || ocrBusy || busy}
+            >
+              {ocrBusy ? 'Running OCR…' : 'OCR page'}
+            </button>
+            <button
+              className="primary-button"
+              onClick={save}
+              disabled={!file || !selectionText.trim() || busy || ocrBusy}
+            >
+              {busy ? 'Saving…' : 'Save recipe'}
+            </button>
+          </div>
 
           {status && <p className="hint">{status}</p>}
 

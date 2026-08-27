@@ -1,6 +1,7 @@
 const path = require('path');
 const { PDFNet } = require('@pdftron/pdfnet-node');
 const store = require('../db/store');
+const { registerModules } = require('../apryse');
 const { parseIngredients } = require('./parseIngredients');
 const { normalizeIngredientName } = require('./normalize');
 
@@ -86,6 +87,7 @@ async function persistRecipe(recipeId, doc, thumbnailPath, rawText) {
 async function ingestRecipe(recipeId, pdfPath, thumbnailPath) {
   try {
     await PDFNet.runWithCleanup(async () => {
+      await registerModules();
       const doc = await PDFNet.PDFDoc.createFromFilePath(pdfPath);
       doc.initSecurityHandler();
       const rawText = await extractText(doc);
@@ -112,6 +114,7 @@ async function ingestRecipe(recipeId, pdfPath, thumbnailPath) {
  */
 async function ingestRecipeFromText(recipeId, pdfPath, thumbnailPath, ingredientsText) {
   await PDFNet.runWithCleanup(async () => {
+    await registerModules();
     const doc = await PDFNet.PDFDoc.createFromFilePath(pdfPath);
     doc.initSecurityHandler();
     await persistRecipe(recipeId, doc, thumbnailPath, ingredientsText);
