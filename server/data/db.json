@@ -1,258 +1,99 @@
 {
-  "nextRecipeId": 7,
+  "nextRecipeId": 4,
   "recipes": [
     {
       "id": 1,
-      "title": "falafel",
-      "source_pdf_url": "/uploads/1787782967639-748775266.pdf",
-      "thumbnail_url": "/uploads/1787782967639-748775266.png",
+      "title": "ChickenAndEggplant",
+      "source_pdf_url": "/uploads/1788923149162-252903587.pdf",
+      "thumbnail_url": null,
+      "page_count": null,
+      "uploaded_by": "dave@test",
+      "status": "processing",
+      "error": null,
+      "created_at": "2026-09-09T03:05:49.170Z",
+      "ingredients": []
+    },
+    {
+      "id": 2,
+      "title": "ChickenAndEggplant",
+      "source_pdf_url": "/uploads/1788923210074-187316139.pdf",
+      "thumbnail_url": "/uploads/1788923210074-187316139.png",
       "page_count": 1,
       "uploaded_by": "dave@test",
       "status": "ready",
       "error": null,
-      "created_at": "2026-08-26T22:22:47.646Z",
+      "created_at": "2026-09-09T03:06:50.081Z",
       "ingredients": [
         {
-          "name": "bean",
-          "rawText": "Beans",
+          "name": "eggplant",
+          "rawText": "Eggplant",
           "quantity": null,
           "unit": null
         },
         {
-          "name": "garlic powder",
-          "rawText": "Garlic powder",
+          "name": "tomato paste",
+          "rawText": "Tomato paste",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "chicken breast",
+          "rawText": "Chicken breast",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "antipasto mix",
+          "rawText": "Antipasto mix",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "cheese",
+          "rawText": "Cheese",
+          "quantity": null,
+          "unit": null
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Blueberry_Pancakes",
+      "source_pdf_url": "/uploads/1788923342682-43383416.pdf",
+      "thumbnail_url": "/uploads/1788923342682-43383416.png",
+      "page_count": 2,
+      "uploaded_by": "dave@test",
+      "status": "ready",
+      "error": null,
+      "created_at": "2026-09-09T03:09:02.690Z",
+      "ingredients": [
+        {
+          "name": "flour",
+          "rawText": "flour",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "sugar",
+          "rawText": "sugar",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "baking powder",
+          "rawText": "baking powder",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "baking soda",
+          "rawText": "baking soda",
           "quantity": null,
           "unit": null
         },
         {
           "name": "salt",
-          "rawText": "Salt",
-          "quantity": null,
-          "unit": null
-        },
-        {
-          "name": "cooking oil",
-          "rawText": "Cooking oil",
-          "quantity": null,
-          "unit": null
-        }
-      ]
-    },
-    {
-      "id": 2,
-      "title": "Blueberry_Pancakes",
-      "source_pdf_url": "/uploads/1787783180086-172069379.pdf",
-      "thumbnail_url": "/uploads/1787783180086-172069379.png",
-      "page_count": 2,
-      "uploaded_by": "dave@test",
-      "status": "ready",
-      "error": null,
-      "created_at": "2026-08-26T22:26:20.093Z",
-      "ingredients": [
-        {
-          "name": "plain flour",
-          "rawText": "260 g plain flour (approx. 2 cups)",
-          "quantity": 260,
-          "unit": "g"
-        },
-        {
-          "name": "caster sugar",
-          "rawText": "2 Tbsp caster sugar",
-          "quantity": 2,
-          "unit": "tbsp"
-        },
-        {
-          "name": "tsp baking powder",
-          "rawText": "1 ½ tsp baking powder",
-          "quantity": 1,
-          "unit": null
-        },
-        {
-          "name": "tsp baking soda",
-          "rawText": "¾ tsp baking soda",
-          "quantity": null,
-          "unit": null
-        },
-        {
-          "name": "tsp salt",
-          "rawText": "½ tsp salt",
-          "quantity": null,
-          "unit": null
-        },
-        {
-          "name": "egg",
-          "rawText": "2 large eggs",
-          "quantity": 2,
-          "unit": null
-        },
-        {
-          "name": "buttermilk",
-          "rawText": "400 ml buttermilk",
-          "quantity": 400,
-          "unit": "ml"
-        },
-        {
-          "name": "vanilla extract",
-          "rawText": "1 tsp vanilla extract",
-          "quantity": 1,
-          "unit": "tsp"
-        },
-        {
-          "name": "unsalted butter and",
-          "rawText": "60 g unsalted butter, melted and cooled",
-          "quantity": 60,
-          "unit": "g"
-        },
-        {
-          "name": "seriously organic blueberrie",
-          "rawText": "150 g Seriously Organic frozen blueberries",
-          "quantity": 150,
-          "unit": "g"
-        },
-        {
-          "name": "butter or oil for cooking",
-          "rawText": "Butter or oil, for cooking",
-          "quantity": null,
-          "unit": null
-        }
-      ]
-    },
-    {
-      "id": 4,
-      "title": "Aunty Flo's chocolate cake",
-      "source_pdf_url": "/uploads/1787789479671-767851084.pdf",
-      "thumbnail_url": "/uploads/1787789479671-767851084.png",
-      "page_count": 1,
-      "uploaded_by": "dave@test",
-      "status": "ready",
-      "error": null,
-      "created_at": "2026-08-27T00:11:19.678Z",
-      "ingredients": [
-        {
-          "name": "margarine",
-          "rawText": "4 oz Margarine",
-          "quantity": 4,
-          "unit": "oz"
-        },
-        {
-          "name": "sugar",
-          "rawText": "4 oz Sugar",
-          "quantity": 4,
-          "unit": "oz"
-        },
-        {
-          "name": "self-raising flour",
-          "rawText": "2 1/2 oz Self-raising flour",
-          "quantity": 2.5,
-          "unit": "oz"
-        },
-        {
-          "name": "egg",
-          "rawText": "3 eggs",
-          "quantity": 3,
-          "unit": null
-        },
-        {
-          "name": "baking powder",
-          "rawText": "1/2 tsp baking powder",
-          "quantity": 0.5,
-          "unit": "tsp"
-        },
-        {
-          "name": "icing sugar",
-          "rawText": "4 oz icing sugar",
-          "quantity": 4,
-          "unit": "oz"
-        },
-        {
-          "name": "butter",
-          "rawText": "1/2 oz butter",
-          "quantity": 0.5,
-          "unit": "oz"
-        },
-        {
-          "name": "dsp drinking chocolate",
-          "rawText": "1 dsp Drinking Chocolate",
-          "quantity": 1,
-          "unit": null
-        },
-        {
-          "name": "water",
-          "rawText": "water",
-          "quantity": null,
-          "unit": null
-        }
-      ]
-    },
-    {
-      "id": 5,
-      "title": "Eggplant and Chicken Pizza",
-      "source_pdf_url": "/uploads/1787790290611-188928799.pdf",
-      "thumbnail_url": "/uploads/1787790290611-188928799.png",
-      "page_count": 10,
-      "uploaded_by": "dave@test",
-      "status": "ready",
-      "error": null,
-      "created_at": "2026-08-27T00:24:50.671Z",
-      "ingredients": [
-        {
-          "name": "eggplant",
-          "rawText": "2 large eggplant (500g each), tops trimmed",
-          "quantity": 2,
-          "unit": null
-        },
-        {
-          "name": "no added salt tomato paste",
-          "rawText": "1/3 cup no added salt tomato paste",
-          "quantity": 0.3333333333333333,
-          "unit": "cup"
-        },
-        {
-          "name": "chicken breast",
-          "rawText": "2 cups (300g) shredded, cooked chicken breast",
-          "quantity": 2,
-          "unit": "cups"
-        },
-        {
-          "name": "antipasto mix",
-          "rawText": "200g drained antipasto mix, chopped (see Tip)",
-          "quantity": 200,
-          "unit": "g"
-        },
-        {
-          "name": "pizza cheese",
-          "rawText": "2/3 cup (80g) grated pizza cheese",
-          "quantity": 0.6666666666666666,
-          "unit": "cup"
-        }
-      ]
-    },
-    {
-      "id": 6,
-      "title": "Aunty Flo's via OCR",
-      "source_pdf_url": "/uploads/1787799910747-119395475.pdf",
-      "thumbnail_url": "/uploads/1787799910747-119395475.png",
-      "page_count": 1,
-      "uploaded_by": "dave@test",
-      "status": "ready",
-      "error": null,
-      "created_at": "2026-08-27T03:05:10.749Z",
-      "ingredients": [
-        {
-          "name": "margarine",
-          "rawText": "Margarine",
-          "quantity": null,
-          "unit": null
-        },
-        {
-          "name": "sugar",
-          "rawText": "Sugar",
-          "quantity": null,
-          "unit": null
-        },
-        {
-          "name": "sr flour",
-          "rawText": "SR Flour",
+          "rawText": "salt",
           "quantity": null,
           "unit": null
         },
@@ -263,20 +104,14 @@
           "unit": null
         },
         {
-          "name": "drinking chocolate",
-          "rawText": "Drinking Chocolate",
+          "name": "buttermilk",
+          "rawText": "buttermilk",
           "quantity": null,
           "unit": null
         },
         {
-          "name": "baking powder",
-          "rawText": "Baking powder",
-          "quantity": null,
-          "unit": null
-        },
-        {
-          "name": "icing sugar",
-          "rawText": "icing sugar",
+          "name": "vanilla extract",
+          "rawText": "vanilla extract",
           "quantity": null,
           "unit": null
         },
@@ -287,20 +122,19 @@
           "unit": null
         },
         {
-          "name": "water",
-          "rawText": "water",
+          "name": "blueberrie",
+          "rawText": "blueberries",
+          "quantity": null,
+          "unit": null
+        },
+        {
+          "name": "butter",
+          "rawText": "butter",
           "quantity": null,
           "unit": null
         }
       ]
     }
   ],
-  "annotations": {
-    "1:dave@test": {
-      "recipe_id": 1,
-      "user_id": "dave@test",
-      "xfdf": "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><xfdf xmlns=\"http://ns.adobe.com/xfdf/\" xml:space=\"preserve\"><pdf-info xmlns=\"http://www.pdftron.com/pdfinfo\" version=\"2\" import-version=\"4\" /><fields /><annots><highlight page=\"0\" rect=\"453.52,454.887,527.99,469.187\" color=\"#FFCD45\" flags=\"print\" name=\"d6d84d27-3b41-1e6c-5094-4383865c9d55\" title=\"Guest\" subject=\"Highlight\" date=\"D:20260827102438+12'00'\" creationdate=\"D:20260827102437+12'00'\" coords=\"453.51969999999994,469.18609999999995,527.9897,469.18609999999995,453.51969999999994,454.88609999999994,527.9897,454.88609999999994\"><trn-custom-data bytes=\"{&quot;trn-annot-preview&quot;:&quot;s so it can be soft&quot;}\"/></highlight></annots><pages><defmtx matrix=\"1,0,0,-1,0,841.89\" /></pages></xfdf>",
-      "updated_at": "2026-08-26T22:24:39.911Z"
-    }
-  }
+  "annotations": {}
 }
