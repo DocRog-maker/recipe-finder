@@ -4,7 +4,7 @@ import RecipeCard from '../components/RecipeCard.jsx';
 import { matchRecipes } from '../api.js';
 
 export default function IngredientMatcher({ onSelectRecipe, selectedRecipeId }) {
-  const [ingredients, setIngredients] = useState(['large eggplant', 'garlic', 'unsalted butter', 'rice']);
+  const [ingredients, setIngredients] = useState(['large eggplant', 'garlic', 'butter', 'rice']);
   const [results, setResults] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
